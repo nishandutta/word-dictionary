@@ -5,13 +5,17 @@ import { Link } from 'react-router-dom'
 function Home() {
   const [words, setWords] = useState([])
   const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const fetchWords = async () => {
+    setLoading(true)
     try {
       const res = await axios.get('http://localhost:5002/words')
       setWords(res.data)
     } catch (error) {
       console.error('Failed to fetch words:', error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -20,6 +24,7 @@ function Home() {
       return fetchWords()
     }
 
+    setLoading(true)
     try {
       const res = await axios.get(
         `http://localhost:5002/words/${query}?exact=false`
@@ -28,17 +33,22 @@ function Home() {
     } catch (err) {
       console.error('Search failed:', err.response?.data || err.message)
       setWords([])
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this word?')) return
 
+    setLoading(true)
     try {
       await axios.delete(`http://localhost:5002/words/${id}`)
       setWords((prev) => prev.filter((word) => word._id !== id))
     } catch (err) {
       console.error('Delete failed:', err.response?.data || err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -75,7 +85,15 @@ function Home() {
         </div>
       </div>
 
-      {words.length > 0 ? (
+      {/* Spinner */}
+      {loading && (
+        <div className='flex justify-center my-6'>
+          <div className='w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin'></div>
+        </div>
+      )}
+
+      {/* Word List */}
+      {!loading && words.length > 0 ? (
         <ul className='space-y-4'>
           {words.map((w, idx) => (
             <li
@@ -118,7 +136,7 @@ function Home() {
           ))}
         </ul>
       ) : (
-        <p className='text-gray-500'>No words found.</p>
+        !loading && <p className='text-gray-500'>No words found.</p>
       )}
     </div>
   )

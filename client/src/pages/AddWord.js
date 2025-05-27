@@ -9,6 +9,9 @@ function AddWord() {
     imageUrl: '',
     videoUrl: '',
   })
+
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const navigate = useNavigate()
 
   const handleChange = (e) =>
@@ -16,30 +19,59 @@ function AddWord() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    await axios.post('http://localhost:5002/words', form)
-    navigate('/')
+    setError('')
+    setLoading(true)
+    try {
+      await axios.post('http://localhost:5002/words', form)
+      navigate('/')
+    } catch (err) {
+      setError('Failed to add word. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-4 max-w-xl mx-auto'>
-      {['word', 'definition', 'imageUrl', 'videoUrl'].map((field) => (
-        <input
-          key={field}
-          name={field}
-          value={form[field]}
-          onChange={handleChange}
-          placeholder={field[0].toUpperCase() + field.slice(1)}
-          className='w-full border p-2 rounded'
-          required={field !== 'imageUrl' && field !== 'videoUrl'}
-        />
-      ))}
-      <button
-        type='submit'
-        className='bg-blue-600 text-white px-4 py-2 rounded'
-      >
-        Add Word
-      </button>
-    </form>
+    <div className='p-4 max-w-xl mx-auto'>
+      <h2 className='text-2xl font-bold mb-4 text-center'>Add New Word</h2>
+
+      {error && (
+        <p className='text-red-600 bg-red-100 p-2 rounded mb-4 text-center'>
+          {error}
+        </p>
+      )}
+
+      <form onSubmit={handleSubmit} className='space-y-4'>
+        {['word', 'definition', 'imageUrl', 'videoUrl'].map((field) => (
+          <input
+            key={field}
+            name={field}
+            value={form[field]}
+            onChange={handleChange}
+            placeholder={field[0].toUpperCase() + field.slice(1)}
+            className='w-full border p-2 rounded focus:outline-none focus:ring focus:border-blue-400'
+            required={field !== 'imageUrl' && field !== 'videoUrl'}
+          />
+        ))}
+
+        <button
+          type='submit'
+          disabled={loading}
+          className={`w-full text-white px-4 py-2 rounded ${
+            loading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600'
+          }`}
+        >
+          {loading ? (
+            <div className='flex items-center justify-center gap-2'>
+              <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
+              Adding...
+            </div>
+          ) : (
+            'Add Word'
+          )}
+        </button>
+      </form>
+    </div>
   )
 }
 
