@@ -58,6 +58,27 @@ router.get('/:query', async (req, res) => {
   }
 })
 
+// GET a word by ID (for edit)
+router.get('/id/:id', async (req, res) => {
+  try {
+    const word = await Word.findById(req.params.id)
+    if (!word) return res.status(404).json({ message: 'Word not found' })
+    res.json(word)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
+router.delete('/:id', async (req, res) => {
+  try {
+    const deleted = await Word.findByIdAndDelete(req.params.id)
+    if (!deleted) return res.status(404).json({ message: 'Word not found' })
+    res.json({ message: 'Word deleted successfully' })
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
 // POST a new word
 router.post('/', async (req, res) => {
   try {

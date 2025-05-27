@@ -31,6 +31,17 @@ function Home() {
     }
   }
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this word?')) return
+
+    try {
+      await axios.delete(`http://localhost:5002/words/${id}`)
+      setWords((prev) => prev.filter((word) => word._id !== id))
+    } catch (err) {
+      console.error('Delete failed:', err.response?.data || err.message)
+    }
+  }
+
   useEffect(() => {
     fetchWords()
   }, [])
@@ -64,7 +75,6 @@ function Home() {
         </div>
       </div>
 
-      {/* Word List */}
       {words.length > 0 ? (
         <ul className='space-y-4'>
           {words.map((w, idx) => (
@@ -72,7 +82,23 @@ function Home() {
               key={idx}
               className='border border-gray-300 rounded p-4 shadow-sm'
             >
-              <h3 className='text-xl font-bold capitalize'>{w.word}</h3>
+              <div className='flex justify-between items-center'>
+                <h3 className='text-xl font-bold capitalize'>{w.word}</h3>
+                <div className='flex gap-2'>
+                  <Link
+                    to={`/edit/${w._id}`}
+                    className='bg-yellow-400 px-3 py-1 rounded text-sm text-black'
+                  >
+                    Edit
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(w._id)}
+                    className='bg-red-500 text-white px-3 py-1 rounded text-sm'
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
               <p className='mb-2 text-gray-700'>{w.definition}</p>
               {w.imageUrl && (
                 <img

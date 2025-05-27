@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import AddWord from './pages/AddWord'
 import './App.css'
+import EditWord from './pages/EditWord'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/add' element={<AddWord />} />
+          <Route path='/edit/:id' element={<EditWord />} />
         </Routes>
       </div>
     </Router>
