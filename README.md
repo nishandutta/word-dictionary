@@ -1,4 +1,4 @@
-# Word Dictionary React App
+# Word Dictionary
 
 A simple MERN application for managing a word dictionary with CRUD functionality — add, edit, delete, and search words. It uses React Router for navigation and Axios to communicate with a backend API.
 
