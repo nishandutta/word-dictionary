@@ -22,7 +22,7 @@ function EditWord() {
       setLoading(true)
       try {
         const res = await axios.get(
-          `http://localhost:5002/words/id/${id}?exact=true`
+          `${process.env.REACT_APP_API_BASE_URL}/words/id/${id}?exact=true`
         )
         setForm({
           word: res.data.word || '',
@@ -50,7 +50,7 @@ function EditWord() {
     setError('')
 
     try {
-      await axios.put(`http://localhost:5002/words/${id}`, form)
+      await axios.put(`${process.env.REACT_APP_API_BASE_URL}/words/${id}`, form)
       navigate('/')
     } catch (err) {
       setError('Update failed. Please try again.')

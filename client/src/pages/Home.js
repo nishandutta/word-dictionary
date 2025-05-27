@@ -10,7 +10,7 @@ function Home() {
   const fetchWords = async () => {
     setLoading(true)
     try {
-      const res = await axios.get('http://localhost:5002/words')
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/words`)
       setWords(res.data)
     } catch (error) {
       console.error('Failed to fetch words:', error.message)
@@ -27,7 +27,7 @@ function Home() {
     setLoading(true)
     try {
       const res = await axios.get(
-        `http://localhost:5002/words/${query}?exact=false`
+        `${process.env.REACT_APP_API_BASE_URL}/words/${query}?exact=false`
       )
       setWords(res.data)
     } catch (err) {
@@ -43,7 +43,7 @@ function Home() {
 
     setLoading(true)
     try {
-      await axios.delete(`http://localhost:5002/words/${id}`)
+      await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/words/${id}`)
       setWords((prev) => prev.filter((word) => word._id !== id))
     } catch (err) {
       console.error('Delete failed:', err.response?.data || err.message)

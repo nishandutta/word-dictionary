@@ -22,7 +22,7 @@ function AddWord() {
     setError('')
     setLoading(true)
     try {
-      await axios.post('http://localhost:5002/words', form)
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/words`, form)
       navigate('/')
     } catch (err) {
       setError('Failed to add word. Please try again.')
